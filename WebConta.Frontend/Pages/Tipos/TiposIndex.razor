@@ -1,0 +1,54 @@
+﻿@page "/tipos"
+@*Inyectamos el Repositorio, en using del componente en donde esta el repositorio lo injectamos en l clase _Imports.razor *@
+@inject IRepository repository
+
+<h3>Mantenimiento de tipos de documentos</h3>
+
+@if(LTipos == null)
+{
+    <p>Cargando ....</p>
+}
+else
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Tipo documento</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach(var tipo in LTipos)
+            {
+                <tr>
+                    <td>@tipo.Name</td>
+                    <td>
+                        @*Insertamos dos botones el de editar como un link porque nos debe de llevar a otra pagina y el de Borrar como boton porque solo tiene que ejecutar un comando*@
+                        <a class="btn btn-warning">Editar</a>
+                        <button class="btn btn-danger">Borrar</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    //Vamos a hacer el llamado del repositorio
+
+    //Creamos una lista tipo countries con ? porque puede ser null
+    public List<Tipo>? LTipos { get; set; }
+
+    //Sobre cargamos el metodo qe se ejecuta cuando carga la pagina
+    protected async override Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        //Obtenemos una lista de paises utilizando el componente repository generico que creamos
+        //Utilizamos el GetAsync al que se le manda la url "api/tipos" y el devuelve el responseHttp con todo el contenido de respuesta, en este caso una lista
+
+        var responsehttp = await repository.GetAsync<List<Tipo>>("api/tipos");
+        LTipos = responsehttp.Response;
+    }
+
+}
