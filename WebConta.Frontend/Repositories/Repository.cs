@@ -14,9 +14,19 @@ namespace WebConta.Frontend.Repositories
             //Para evitar el problema de las mayusculas porque en json vienen en minusculas y en c# estan en mayusculas
             PropertyNameCaseInsensitive = true,
         };
+
         public Repository(HttpClient httpClient)
         {
             _httpClient = httpClient;
+        }
+
+        public async Task<HttpResponseWrapper<object>> DeleteAsync<T>(string url)
+        {
+            //Mandamos la url y el modelo ya codificado
+            var responsehttp = await _httpClient.DeleteAsync(url);
+
+            //Como no regresa nada, mandamos null, si hubo error regresamos la negacion sel IsSuccessStatusCode y la respuesta del http
+            return new HttpResponseWrapper<object>(null, !responsehttp.IsSuccessStatusCode, responsehttp);
         }
 
         public async Task<HttpResponseWrapper<T>> GetAsync<T>(string url)
@@ -25,17 +35,16 @@ namespace WebConta.Frontend.Repositories
             if (responsehttp.IsSuccessStatusCode)
             {
                 // Si funciona la peticion hay que deserializar la respuesta porque viene en json y hay que pasarla a un objeto mediane un metodo privado creado por nosostros
-                var response = await UnserializedAnswer<T>(responsehttp);
+                var response = await UnserializedAnswerAsync<T>(responsehttp);
                 //Regresamos el objeto deserializado, false porque funciono y la respuesta del http
                 return new HttpResponseWrapper<T>(response, false, responsehttp);
             }
 
             //Como hubo error regresamos el default, true porque hubo error y la respuesta del http
             return new HttpResponseWrapper<T>(default, true, responsehttp);
-
         }
 
-        private async Task<T> UnserializedAnswer<T>(HttpResponseMessage responsehttp)
+        private async Task<T> UnserializedAnswerAsync<T>(HttpResponseMessage responsehttp)
         {
             //Leemos el contenido de la lectura como un string
             var response = await responsehttp.Content.ReadAsStringAsync();
@@ -50,7 +59,7 @@ namespace WebConta.Frontend.Repositories
             var messageJson = JsonSerializer.Serialize(model);
 
             //Convertimos para utilizar el alfabeto y codificar segun enumeracion y formato json
-            var messageContent = new StringContent(messageJson, Encoding.UTF8, "aplication/json");
+            var messageContent = new StringContent(messageJson, Encoding.UTF8, "application/json");
 
             //Mandamos la url y el modelo ya codificado
             var responsehttp = await _httpClient.PostAsync(url, messageContent);
@@ -73,7 +82,46 @@ namespace WebConta.Frontend.Repositories
             if (responsehttp.IsSuccessStatusCode)
             {
                 // Si funciona la peticion hay que deserializar la respuesta porque viene en json y hay que pasarla a un objeto mediane un metodo privado creado por nosostros. Deserializamos lo que esperamos que nos regrese que ya no es <T> sino <TActionResponse>
-                var response = await UnserializedAnswer<TActionResponse>(responsehttp);
+                var response = await UnserializedAnswerAsync<TActionResponse>(responsehttp);
+                //Regresamos el objeto deserializado, false porque funciono y la respuesta del http
+                return new HttpResponseWrapper<TActionResponse>(response, false, responsehttp);
+            }
+
+            //Como hubo error regresamos el default, true porque hubo error y la respuesta del http
+            return new HttpResponseWrapper<TActionResponse>(default, true, responsehttp);
+        }
+
+        //Para la respuesta del PutAsync NoContent
+        public async Task<HttpResponseWrapper<object>> PutAsync<T>(string url, T model)
+        {
+            //Serializamos el modelo para volverlo string json
+            var messageJson = JsonSerializer.Serialize(model);
+
+            //Convertimos para utilizar el alfabeto y codificar segun enumeracion y formato json
+            var messageContent = new StringContent(messageJson, Encoding.UTF8, "aplication/json");
+
+            //Mandamos la url y el modelo ya codificado
+            var responsehttp = await _httpClient.PutAsync(url, messageContent);
+
+            //Como no regresa nada, mandamos null, si hubo error regresamos la negacion sel IsSuccessStatusCode y la respuesta del http
+            return new HttpResponseWrapper<object>(null, !responsehttp.IsSuccessStatusCode, responsehttp);
+        }
+
+        //Recibe de parametros la url y el modelo para la respuesta del PutAsync OK()
+        public async Task<HttpResponseWrapper<TActionResponse>> PutAsync<T, TActionResponse>(string url, T model)
+        {
+            //Serializamos el modelo para volverlo string json
+            var messageJson = JsonSerializer.Serialize(model);
+
+            //Convertimos para utilizar el alfabeto y codificar segun enumeracion y formato json
+            var messageContent = new StringContent(messageJson, Encoding.UTF8, "aplication/json");
+
+            //Mandamos la url y el modelo ya codificado
+            var responsehttp = await _httpClient.PutAsync(url, messageContent);
+            if (responsehttp.IsSuccessStatusCode)
+            {
+                // Si funciona la peticion hay que deserializar la respuesta porque viene en json y hay que pasarla a un objeto mediane un metodo privado creado por nosostros. Deserializamos lo que esperamos que nos regrese que ya no es <T> sino <TActionResponse>
+                var response = await UnserializedAnswerAsync<TActionResponse>(responsehttp);
                 //Regresamos el objeto deserializado, false porque funciono y la respuesta del http
                 return new HttpResponseWrapper<TActionResponse>(response, false, responsehttp);
             }

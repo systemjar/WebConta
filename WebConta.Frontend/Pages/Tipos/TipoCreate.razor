@@ -1,0 +1,10 @@
+﻿@page "/tipos/create"
+
+<h3> Crear Tipo de Documento</h3>
+
+@*Llamamos al formulario CountryForm con los paramtros del objeto Country, CreateAsync y Return definidos en la clase CountryCreate.razor.cs*@
+
+@*Para poder modificar la propiedd de formulario posteado (FormPostedSuccessfully)  necesitamos referenciarlo con href*@
+
+<TipoForm @ref="tipoForm" Tipo="tipo" OnValidSubmit="CreateAsync" ReturnAction="Return" />
+

@@ -8,8 +8,6 @@ namespace WebConta.Backend.Controllers
     //Data Notation para que funcione como controlador
     [ApiController]
     [Route("api/[controller]")]
-
-    //Esta clase hereda de ControllerBase
     public class TiposController : ControllerBase
     {
         //Campo para que se pueda usar en todo el controlador
@@ -63,7 +61,7 @@ namespace WebConta.Backend.Controllers
         [HttpPost]
         public async Task<IActionResult> PostAsync(Tipo tipo)
         {
-            _context.Tipos.Add(tipo);
+            _context.Add(tipo);
             await _context.SaveChangesAsync();
             return Ok(tipo);  //Ok es la respuesta del http y regresamos el objeto para saber como quedo al agregarlo
         }
