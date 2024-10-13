@@ -1,5 +1,9 @@
 using Microsoft.EntityFrameworkCore;
 using WebConta.Backend.Data;
+using WebConta.Backend.Repositories.Implementations;
+using WebConta.Backend.Repositories.Interfaces;
+using WebConta.Backend.UnitOfWork.Implementations;
+using WebConta.Backend.UnitOfWork.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,6 +16,10 @@ builder.Services.AddSwaggerGen();
 
 //Inyectamos el servicio para conectarse al SqlServer
 builder.Services.AddDbContext<DataContext>(x => x.UseSqlServer("name=CadenaSql"));
+
+//Inyectamos Los genericos del Repositorio y del UnitOfWork
+builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepositoryy<>));
+builder.Services.AddScoped(typeof(IGenericUnitOfWork<>), typeof(GenericUnitOfWork<>));
 
 var app = builder.Build();
 
