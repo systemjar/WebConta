@@ -16,14 +16,14 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach (var country in LTipos!)
+                @foreach (var tipo in LTipos!)
                 {
                     <tr>
-                        <td>@country.Name</td>
+                        <td>@tipo.Name</td>
                         <td>
                             @*Insertamos dos botones el de editar como un link porque nos debe de llevar a otra pagina y el de Borrar como boton porque solo tiene que ejecutar un comando*@
-                            <a class="btn btn-warning">Editar</a>
-                            <button class="btn btn-danger">Borrar</button>
+                            <a href="/tipos/edit/@tipo.Id" class="btn btn-warning">Editar</a>
+                            <button @onclick=@(() => DeleteAsync(tipo)) class="btn btn-danger">Borrar</button>
                         </td>
                     </tr>
                 }

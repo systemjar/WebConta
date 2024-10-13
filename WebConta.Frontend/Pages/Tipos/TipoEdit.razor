@@ -1,0 +1,14 @@
+﻿@page "/tipos/edit/{Id:int}"
+
+<h3>Editar Tipo de Documento</h3>
+
+
+
+@if(tipo == null)
+{
+    <Loading></Loading>
+}
+else
+{
+    <TipoForm @ref="tipoForm" Tipo="tipo" OnValidSubmit="EditAsync" ReturnAction="Return" />
+}

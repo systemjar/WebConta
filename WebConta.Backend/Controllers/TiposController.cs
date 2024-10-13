@@ -8,6 +8,7 @@ namespace WebConta.Backend.Controllers
     //Data Notation para que funcione como controlador
     [ApiController]
     [Route("api/[controller]")]
+    //[Route("api/tipos")]
     public class TiposController : ControllerBase
     {
         //Campo para que se pueda usar en todo el controlador

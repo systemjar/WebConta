@@ -1,5 +1,6 @@
 ﻿using System.Text.Json;
 using System.Text;
+using Microsoft.Extensions.Logging;
 
 namespace WebConta.Frontend.Repositories
 {
@@ -29,9 +30,10 @@ namespace WebConta.Frontend.Repositories
             return new HttpResponseWrapper<object>(null, !responsehttp.IsSuccessStatusCode, responsehttp);
         }
 
-        public async Task<HttpResponseWrapper<T>> GetAsync<T>(string url)
+        public async Task<HttpResponseWrapper<T>> GetAsync<T>(string url1)
         {
-            var responsehttp = await _httpClient.GetAsync(url);
+            var responsehttp = await _httpClient.GetAsync(url1);
+
             if (responsehttp.IsSuccessStatusCode)
             {
                 // Si funciona la peticion hay que deserializar la respuesta porque viene en json y hay que pasarla a un objeto mediane un metodo privado creado por nosostros
@@ -75,7 +77,7 @@ namespace WebConta.Frontend.Repositories
             var messageJson = JsonSerializer.Serialize(model);
 
             //Convertimos para utilizar el alfabeto y codificar segun enumeracion y formato json
-            var messageContent = new StringContent(messageJson, Encoding.UTF8, "aplication/json");
+            var messageContent = new StringContent(messageJson, Encoding.UTF8, "application/json");
 
             //Mandamos la url y el modelo ya codificado
             var responsehttp = await _httpClient.PostAsync(url, messageContent);
@@ -98,7 +100,7 @@ namespace WebConta.Frontend.Repositories
             var messageJson = JsonSerializer.Serialize(model);
 
             //Convertimos para utilizar el alfabeto y codificar segun enumeracion y formato json
-            var messageContent = new StringContent(messageJson, Encoding.UTF8, "aplication/json");
+            var messageContent = new StringContent(messageJson, Encoding.UTF8, "application/json");
 
             //Mandamos la url y el modelo ya codificado
             var responsehttp = await _httpClient.PutAsync(url, messageContent);
@@ -114,7 +116,7 @@ namespace WebConta.Frontend.Repositories
             var messageJson = JsonSerializer.Serialize(model);
 
             //Convertimos para utilizar el alfabeto y codificar segun enumeracion y formato json
-            var messageContent = new StringContent(messageJson, Encoding.UTF8, "aplication/json");
+            var messageContent = new StringContent(messageJson, Encoding.UTF8, "application/json");
 
             //Mandamos la url y el modelo ya codificado
             var responsehttp = await _httpClient.PutAsync(url, messageContent);
